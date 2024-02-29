@@ -9,6 +9,7 @@ public partial class Form1 : Form {
     private readonly Square _square;
     private readonly Square _square2;
     private readonly Square _square3;
+    private readonly Square _square4;
 
     // Axes
     private readonly AxisX _xAxis;
@@ -31,6 +32,7 @@ public partial class Form1 : Form {
         _square  = new(Color.Purple);
         _square2 = new(Color.Orange);
         _square3 = new(Color.Cyan);
+        _square4 = new(Color.DarkBlue);
     }
 
     protected override void OnPaint(PaintEventArgs e) {
@@ -47,11 +49,12 @@ public partial class Form1 : Form {
 
         // Draw square
         _square.Draw(e.Graphics, _square.vertexbuffer.RotateVectors(20));
-        _square2.Draw(e.Graphics, _square2.vertexbuffer);
-        _square3.Draw(e.Graphics, _square3.vertexbuffer);
+        _square2.Draw(e.Graphics, _square2.vertexbuffer.TranslateVectors(125, 75));
+        _square3.Draw(e.Graphics, _square3.vertexbuffer.ScaleVectors(2, 2));
+        _square4.Draw(e.Graphics, _square4.vertexbuffer);
     }
 
-    private void Form1_KeyDown(object sender, KeyEventArgs e) {
+    private void Form1_KeyDown(object? sender, KeyEventArgs e) {
         if (e.KeyCode == Keys.Escape) Application.Exit();
     }
 }
