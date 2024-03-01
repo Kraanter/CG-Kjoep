@@ -16,10 +16,6 @@ public static class Extensions {
     public static List<Vector> TranslateVectors(this List<Vector> vectors, Vector translation) =>
         vectors.TranslateVectors(translation.X, translation.Y);
 
-    public static List<Vector> ApplyTransformation(this List<Vector> vectors, Matrix transformation) {
-        List<Vector> result = new();
-        foreach (Vector vector in vectors) result.Add(vector * transformation);
-
-        return result;
-    }
+    public static List<Vector> ApplyTransformation(this List<Vector> vectors, Matrix transformation) =>
+        vectors.Select(vector => vector * transformation).ToList();
 }
