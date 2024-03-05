@@ -51,10 +51,10 @@ public static class VectorMathTestCases {
 
     public static List<TestCaseData> MultiplyVectorWithMatrixTestCases =>
         new() {
-                  new TestCaseData(new Vector(2, 0), Matrix.Rotate(90)).Returns(new Vector(0,        2)),
-                  new TestCaseData(new Vector(2, 2), Matrix.Scale(3, 2)).Returns(new Vector(6,       4)),
-                  new TestCaseData(new Vector(2, 2), Matrix.Translation(3, 2)).Returns(new Vector(5, 4)),
-                  new TestCaseData(new Vector(2, 2), Matrix.Identity(3)).Returns(new Vector(2,       2)),
+                  new TestCaseData(new Vector(2, 0), Matrix.Rotate(90, Axis.Y)).Returns(new Vector(0,   2)),
+                  new TestCaseData(new Vector(2, 2), Matrix.Scale(3, 2, 1)).Returns(new Vector(6,       4)),
+                  new TestCaseData(new Vector(2, 2), Matrix.Translation(3, 2, 0)).Returns(new Vector(5, 4)),
+                  new TestCaseData(new Vector(2, 2), Matrix.Identity(3)).Returns(new Vector(2,          2)),
               };
 
     public static List<TestCaseData> MultiplyVectorByScalarTestCases =>

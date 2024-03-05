@@ -3,23 +3,21 @@
 public class Vector(float[] values) : Matrix(values) {
     public Vector() : this(0, 0) { }
 
-    public Vector(float x, float y, float w = 1) : this(new[] { x, y, w }) {
-        // X = x;
-        // Y = y;
-        // W = w;
-    }
+    public Vector(float x, float y, float z = 0, float w = 1) : this(new[] { x, y, z, w }) { }
 
     public float X { get => this[0]; set => this[0] = value; }
     public float Y { get => this[1]; set => this[1] = value; }
-    public float W { get => this[2]; set => this[2] = value; }
+    public float Z { get => this[2]; set => this[2] = value; }
+    public float W { get => this[3]; set => this[3] = value; }
 
     public float Length() => MathF.Sqrt(LengthSquared());
 
-    public float LengthSquared() => X * X + Y * Y;
+    public float LengthSquared() => X * X + Y * Y + Z * Z;
 
     public Vector Add(Vector v) {
-        this[0, 0] += v.X;
-        this[0, 1] += v.Y;
+        X += v.X;
+        Y += v.Y;
+        Z += v.Z;
 
         return this;
     }
@@ -28,8 +26,9 @@ public class Vector(float[] values) : Matrix(values) {
         left.Clone().Add(right);
 
     public Vector Sub(Vector v) {
-        this[0, 0] -= v.X;
-        this[0, 1] -= v.Y;
+        X -= v.X;
+        Y -= v.Y;
+        Z -= v.Z;
 
         return this;
     }
@@ -38,8 +37,9 @@ public class Vector(float[] values) : Matrix(values) {
         left.Clone().Sub(right);
 
     public Vector Multiply(float value) {
-        this[0, 0] *= value;
-        this[0, 1] *= value;
+        X *= value;
+        Y *= value;
+        Z *= value;
 
         return this;
     }
@@ -48,8 +48,9 @@ public class Vector(float[] values) : Matrix(values) {
         left.Clone().Multiply(right);
 
     public Vector Divide(float value) {
-        this[0, 0] /= value;
-        this[0, 1] /= value;
+        X /= value;
+        Y /= value;
+        Z /= value;
 
         return this;
     }
@@ -63,8 +64,9 @@ public class Vector(float[] values) : Matrix(values) {
         // check for zero length
         if (!(length > float.Epsilon)) return this;
 
-        this[0, 0] /= length;
-        this[0, 1] /= length;
+        X /= length;
+        Y /= length;
+        Z /= length;
 
         return this;
     }
@@ -78,11 +80,11 @@ public class Vector(float[] values) : Matrix(values) {
         return this;
     }
 
-    public Vector Perp() => new(-Y, X);
+    public Vector Perp() => new(-Y, X, Z);
 
-    public Vector Clone() => new(X, Y);
+    public Vector Clone() => new(X, Y, Z);
 
-    public override string ToString() => $"({X}, {Y})";
+    public override string ToString() => $"({X}, {Y}, {Z})";
 
     public override bool Equals(object? obj) {
         if (ReferenceEquals(null, obj)) return false;
@@ -101,27 +103,28 @@ public class Vector(float[] values) : Matrix(values) {
         if (a is null && b is null) return true;
         if (a is null || b is null) return false;
 
-        return FloatEquals(a.X, b.X) && FloatEquals(a.Y, b.Y) && FloatEquals(a.W, b.W);
+        return FloatEquals(a.X, b.X) && FloatEquals(a.Y, b.Y) && FloatEquals(a.Z, b.Z) && FloatEquals(a.W, b.W);
     }
 
     public static bool operator !=(Vector a, Vector b) => !(a == b);
 
-    // Oke this is very nice new syntax booiiii DOTNET 8 babay :D
-    public static Vector operator *(Vector v, Matrix m) =>
-        (m.Rows, m.Cols) switch {
-            _ when m.Rows != m.Cols =>
-                throw new InvalidOperationException($"Matrix must be 2x2 or 3x3, not {m.Rows}x{m.Cols}"),
-            (2, 2) => new(m[0, 0] * v.X + m[0, 1] * v.Y, m[1, 0] * v.X + m[1, 1] * v.Y),
-            (3, 3) => new(m[0, 0] * v.X + m[0, 1] * v.Y + m[0, 2] * v.W, m[1, 0] * v.X + m[1, 1] * v.Y + m[1, 2] * v.W),
-            _      => throw new InvalidOperationException("Matrix must be 2x2 or 3*3 " + $"not {m.Rows}x{m.Cols}"),
-        };
+    public static Vector operator *(Vector v, Matrix m) => ((Matrix)v * m).ToVector();
 
     public float DistanceTo(Vector targetPos) => MathF.Sqrt(DistanceToSquared(targetPos));
 
     public float DistanceToSquared(Vector targetPos) {
         float x = targetPos.X - X;
         float y = targetPos.Y - Y;
+        float z = targetPos.Z - Z;
 
-        return x * x + y * y;
+        return x * x + y * y + z * z;
+    }
+
+    public Vector ApplyProjection(float distance) {
+        Matrix result = Identity(4);
+        result[0, 0] = -distance / Z;
+        result[1, 1] = -distance / Z;
+
+        return this * result;
     }
 }

@@ -8,18 +8,18 @@ public class MatrixTransformationTests {
         typeof(MatrixTransformationTestCases),
         nameof(MatrixTransformationTestCases.RotationMatrixTestCases)
     )]
-    public Matrix RotationMatrix(float angle) => Matrix.Rotate(angle);
+    public Matrix RotationMatrix(float angle) => Matrix.Rotate(angle, Axis.Z);
 
     [Test]
     [TestCaseSource(typeof(MatrixTransformationTestCases), nameof(MatrixTransformationTestCases.ScaleMatrixTestCases))]
-    public Matrix ScaleMatrix(float x, float y) => Matrix.Scale(x, y);
+    public Matrix ScaleMatrix(float x, float y, float z) => Matrix.Scale(x, y, z);
 
     [Test]
     [TestCaseSource(
         typeof(MatrixTransformationTestCases),
         nameof(MatrixTransformationTestCases.TranslationMatrixTestCases)
     )]
-    public Matrix TranslationMatrix(float x, float y) => Matrix.Translation(x, y);
+    public Matrix TranslationMatrix(float x, float y, float z) => Matrix.Translation(x, y, z);
 }
 
 public static class MatrixTransformationTestCases {
@@ -35,10 +35,10 @@ public static class MatrixTransformationTestCases {
 
     public static List<TestCaseData> ScaleMatrixTestCases =>
         new() {
-                  new TestCaseData(2, 2).Returns(new Matrix(2, 0, 0, 2)),
-                  new TestCaseData(3, 2).Returns(new Matrix(3, 0, 0, 2)),
-                  new TestCaseData(2, 3).Returns(new Matrix(2, 0, 0, 3)),
-                  new TestCaseData(4, 4).Returns(new Matrix(4, 0, 0, 4)),
+                  new TestCaseData(2, 2, 0).Returns(new Matrix(2, 0, 0, 2)),
+                  new TestCaseData(3, 2, 0).Returns(new Matrix(3, 0, 0, 2)),
+                  new TestCaseData(2, 3, 0).Returns(new Matrix(2, 0, 0, 3)),
+                  new TestCaseData(4, 4, 0).Returns(new Matrix(4, 0, 0, 4)),
               };
 
     public static List<TestCaseData> TranslationMatrixTestCases =>

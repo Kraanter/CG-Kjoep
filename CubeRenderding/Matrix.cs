@@ -2,6 +2,8 @@
 
 namespace CubeRenderding;
 
+public enum Axis { X, Y, Z }
+
 public class Matrix(float[,] elements) {
     protected const float FloatingPointTolerance = 0.0001f;
     public Matrix(int size) : this(size, size) { }
@@ -147,33 +149,80 @@ public class Matrix(float[,] elements) {
 
     public static bool operator !=(Matrix a, Matrix b) => !(a == b);
 
-    public static Matrix Scale(float x, float y) {
-        Matrix result = Identity(3);
+    public static Matrix Scale(float x, float y, float z) {
+        Matrix result = Identity(4);
         result[0, 0] = x;
         result[1, 1] = y;
+        result[2, 2] = z;
 
         return result;
     }
 
-    public static Matrix Rotate(float degrees) {
-        float radians = degrees * MathF.PI / 180;
-        float cos     = MathF.Cos(radians);
-        float sin     = MathF.Sin(radians);
+    public static Matrix Rotate(float degrees, Axis axis) =>
+        axis switch {
+            Axis.X => RotateX(DegreesToRadians(degrees)),
+            Axis.Y => RotateY(DegreesToRadians(degrees)),
+            Axis.Z => RotateZ(DegreesToRadians(degrees)),
+            _      => throw new InvalidOperationException("Invalid axis"),
+        };
 
-        Matrix result = Identity(3);
-        result[0, 0] = cos;
-        result[0, 1] = -sin;
-        result[1, 0] = sin;
-        result[1, 1] = cos;
+    private static float DegreesToRadians(float degrees) => MathF.PI * degrees / 180;
+
+    private static Matrix RotateX(float radians) {
+        Matrix result = Identity(4);
+        result[1, 1] = MathF.Cos(radians);
+        result[1, 2] = -MathF.Sin(radians);
+        result[2, 1] = MathF.Sin(radians);
+        result[2, 2] = MathF.Cos(radians);
 
         return result;
     }
 
-    public static Matrix Translation(float x, float y) {
-        Matrix result = Identity(3);
+    private static Matrix RotateY(float radians) {
+        Matrix result = Identity(4);
+        result[0, 0] = MathF.Cos(radians);
+        result[0, 2] = -MathF.Sin(radians);
+        result[2, 0] = MathF.Sin(radians);
+        result[2, 2] = MathF.Cos(radians);
+
+        return result;
+    }
+
+    private static Matrix RotateZ(float radians) {
+        Matrix result = Identity(4);
+        result[0, 0] = MathF.Cos(radians);
+        result[0, 1] = -MathF.Sin(radians);
+        result[1, 0] = MathF.Sin(radians);
+        result[1, 1] = MathF.Cos(radians);
+
+        return result;
+    }
+
+    public static Matrix Translation(float x, float y, float z) {
+        Matrix result = Identity(4);
         result[0, 2] = x;
         result[1, 2] = y;
+        result[2, 3] = z;
 
         return result;
+    }
+
+    public static Matrix View(float r, float theta, float phi) {
+        Matrix orientation = new(
+            new[,] {
+                       { -MathF.Sin(theta), MathF.Cos(theta), 0, 0 },
+                       { -MathF.Cos(theta) * MathF.Cos(phi), -MathF.Cos(phi)  * MathF.Sin(theta), MathF.Sin(phi), 0 },
+                       { MathF.Cos(theta)  * MathF.Sin(phi), MathF.Sin(theta) * MathF.Sin(phi), MathF.Cos(phi), -r },
+                       { 0, 0, 0, 1 },
+                   }
+        );
+
+        return orientation;
+    }
+
+    public Vector ToVector() {
+        if (Rows != 1 && Cols != 1) throw new InvalidOperationException("Matrix must be a 1xN or Nx1 matrix");
+
+        return new(Grid.Cast<float>().ToArray());
     }
 }
