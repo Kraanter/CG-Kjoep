@@ -19,6 +19,27 @@ public class Matrix(float[,] elements) {
     public Matrix(float e00, float e01, float e02, float e10, float e11, float e12, float e20, float e21, float e22) :
         this(new[,] { { e00, e01, e02 }, { e10, e11, e12 }, { e20, e21, e22 } }) { }
 
+    public Matrix(
+        float e00,
+        float e01,
+        float e02,
+        float e03,
+        float e10,
+        float e11,
+        float e12,
+        float e13,
+        float e20,
+        float e21,
+        float e22,
+        float e23,
+        float e30,
+        float e31,
+        float e32,
+        float e33
+    ) : this(
+        new[,] { { e00, e01, e02, e03 }, { e10, e11, e12, e13 }, { e20, e21, e22, e23 }, { e30, e31, e32, e33 } }
+    ) { }
+
     private float[,] Grid { get; } = elements;
     public  int      Rows => Grid.GetLength(0);
     public  int      Cols => Grid.GetLength(1);
@@ -74,6 +95,17 @@ public class Matrix(float[,] elements) {
         var result = new Matrix(a.Rows, a.Cols);
         for (var i = 0; i < a.Rows; i++) {
             for (var j = 0; j < a.Cols; j++) result[i, j] = a[i, j] - b[i, j];
+        }
+
+        return result;
+    }
+
+    public static Vector operator *(Matrix m, Vector v) {
+        if (m.Cols > 4) throw new InvalidOperationException("Matrix columns must be equal to vector dimension");
+
+        var result = new Vector();
+        for (var i = 0; i < m.Rows; i++) {
+            for (var j = 0; j < m.Cols; j++) result[i] += m[i, j] * v[j];
         }
 
         return result;
@@ -149,6 +181,8 @@ public class Matrix(float[,] elements) {
 
     public static bool operator !=(Matrix a, Matrix b) => !(a == b);
 
+    public static Matrix Scale(float size) => Scale(size, size, size);
+
     public static Matrix Scale(float x, float y, float z) {
         Matrix result = Identity(4);
         result[0, 0] = x;
@@ -208,16 +242,39 @@ public class Matrix(float[,] elements) {
     }
 
     public static Matrix View(float r, float theta, float phi) {
-        Matrix orientation = new(
+        theta = DegreesToRadians(theta);
+        phi   = DegreesToRadians(phi);
+
+        // Matrix location = Identity(4);
+        // location[2, 3] = r;
+        //
+        // Matrix orientationX = Identity(4);
+        // Matrix orientationY = Identity(4);
+        //
+        // orientationX[1, 1] = MathF.Cos(theta);
+        // orientationX[1, 2] = -MathF.Sin(theta);
+        // orientationX[2, 1] = MathF.Sin(theta);
+        // orientationX[2, 2] = MathF.Cos(theta);
+        //
+        // orientationY[0, 0] = MathF.Cos(phi);
+        // orientationY[0, 2] = MathF.Sin(phi);
+        // orientationY[2, 0] = -MathF.Sin(phi);
+        // orientationY[2, 2] = MathF.Cos(phi);
+        //
+        // // Inverse the 
+        //
+        // return location * orientationX * orientationY;
+
+        var returns = new Matrix(
             new[,] {
                        { -MathF.Sin(theta), MathF.Cos(theta), 0, 0 },
-                       { -MathF.Cos(theta) * MathF.Cos(phi), -MathF.Cos(phi)  * MathF.Sin(theta), MathF.Sin(phi), 0 },
-                       { MathF.Cos(theta)  * MathF.Sin(phi), MathF.Sin(theta) * MathF.Sin(phi), MathF.Cos(phi), -r },
+                       { -MathF.Cos(theta) * MathF.Cos(phi), -MathF.Sin(theta) * MathF.Cos(phi), MathF.Sin(phi), 0 },
+                       { MathF.Cos(theta)  * MathF.Sin(phi), MathF.Sin(theta)  * MathF.Sin(phi), MathF.Cos(phi), -r },
                        { 0, 0, 0, 1 },
                    }
         );
 
-        return orientation;
+        return returns;
     }
 
     public Vector ToVector() {

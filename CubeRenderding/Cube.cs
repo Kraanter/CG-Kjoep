@@ -1,4 +1,6 @@
-﻿namespace CubeRenderding;
+﻿using System.Drawing.Drawing2D;
+
+namespace CubeRenderding;
 
 public class Cube(Color color) {
     //          7----------4
@@ -32,12 +34,15 @@ public class Cube(Color color) {
                                               };
 
     public void Draw(Graphics g, List<Vector> vb) {
-        var   pen   = new Pen(color, 2f);
+        Pen   pen   = new(color, 2f);
         Brush brush = new SolidBrush(Color.Black);
 
         g.DrawLine(pen, vb[0].X, vb[0].Y, vb[1].X, vb[1].Y); //0 -> 1
+        pen.Color = Color.Red;
         g.DrawLine(pen, vb[1].X, vb[1].Y, vb[2].X, vb[2].Y); //1 -> 2
+        pen.Color = Color.Green;
         g.DrawLine(pen, vb[2].X, vb[2].Y, vb[3].X, vb[3].Y); //2 -> 3
+        pen.Color = color;
         g.DrawLine(pen, vb[3].X, vb[3].Y, vb[0].X, vb[0].Y); //3 -> 0
 
         g.DrawLine(pen, vb[4].X, vb[4].Y, vb[5].X, vb[5].Y); //4 -> 5
@@ -45,10 +50,12 @@ public class Cube(Color color) {
         g.DrawLine(pen, vb[6].X, vb[6].Y, vb[7].X, vb[7].Y); //6 -> 7
         g.DrawLine(pen, vb[7].X, vb[7].Y, vb[4].X, vb[4].Y); //7 -> 4
 
-        // pen.DashStyle = DashStyle.DashDot;
+        pen.DashStyle = DashStyle.DashDot;
         g.DrawLine(pen, vb[0].X, vb[0].Y, vb[4].X, vb[4].Y); //0 -> 4
         g.DrawLine(pen, vb[1].X, vb[1].Y, vb[5].X, vb[5].Y); //1 -> 5
+        pen.Color = Color.Blue;
         g.DrawLine(pen, vb[2].X, vb[2].Y, vb[6].X, vb[6].Y); //2 -> 6
+        pen.Color = color;
         g.DrawLine(pen, vb[3].X, vb[3].Y, vb[7].X, vb[7].Y); //3 -> 7
 
         var font = new Font("Arial", 12, FontStyle.Bold);

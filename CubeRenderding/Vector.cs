@@ -103,12 +103,12 @@ public class Vector(float[] values) : Matrix(values) {
         if (a is null && b is null) return true;
         if (a is null || b is null) return false;
 
-        return FloatEquals(a.X, b.X) && FloatEquals(a.Y, b.Y) && FloatEquals(a.Z, b.Z) && FloatEquals(a.W, b.W);
+        return FloatEquals(a.X, b.X) && FloatEquals(a.Y, b.Y) && FloatEquals(a.Z, b.Z);
     }
 
     public static bool operator !=(Vector a, Vector b) => !(a == b);
 
-    public static Vector operator *(Vector v, Matrix m) => ((Matrix)v * m).ToVector();
+    // public static Vector operator *(Vector v, Matrix m) => ((Matrix)v * m).ToVector();
 
     public float DistanceTo(Vector targetPos) => MathF.Sqrt(DistanceToSquared(targetPos));
 
@@ -121,10 +121,10 @@ public class Vector(float[] values) : Matrix(values) {
     }
 
     public Vector ApplyProjection(float distance) {
-        Matrix result = Identity(4);
-        result[0, 0] = -distance / Z;
-        result[1, 1] = -distance / Z;
+        if (Z == 0) return this;
 
-        return this * result;
+        return new(-distance * X / Z, -distance * Y / Z);
     }
+
+    public Vector ApplyViewport(float width, float height) => new(X + width / 2, -Y + height / 2);
 }

@@ -29,5 +29,8 @@ public static class Extensions {
         vectors.Select(vector => vector.ApplyProjection(distance)).ToList();
 
     public static List<Vector> ApplyTransformation(this List<Vector> vectors, Matrix transformation) =>
-        vectors.Select(vector => vector * transformation).ToList();
+        vectors.Select(vector => transformation * vector).ToList();
+
+    public static List<Vector> ApplyViewport(this List<Vector> vectors, float width, float height) =>
+        vectors.Select(vector => vector.ApplyViewport(width, height)).ToList();
 }
