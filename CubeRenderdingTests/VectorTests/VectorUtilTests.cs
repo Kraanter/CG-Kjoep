@@ -13,6 +13,7 @@ public class VectorUtilTests {
         Assert.AreEqual(1, FloatingpointRound(length));
     }
 
+    [Test]
     public void NormalizeZeroVectorReturnsZeroVector() {
         var    zero       = new Vector(0, 0);
         Vector normalized = zero.Normalize();
@@ -44,6 +45,14 @@ public class VectorUtilTests {
     public float DistanceSquaredFromVectorToVector(Vector v1, Vector v2) =>
         FloatingpointRound(v1.DistanceToSquared(v2));
 
+    [Test]
+    [TestCaseSource(typeof(VectorUtilTestCases), nameof(VectorUtilTestCases.ApplyProjectionTestCases))]
+    public Vector ApplyProjection(Vector v, float distance) => v.ApplyProjection(distance);
+
+    [Test]
+    [TestCaseSource(typeof(VectorUtilTestCases), nameof(VectorUtilTestCases.ApplyViewportTestCases))]
+    public Vector ViewportProjection(Vector v, float width, float height) => v.ApplyViewport(width, height);
+
     private static float FloatingpointRound(float value) => MathF.Round(value, 4);
 }
 
@@ -62,5 +71,18 @@ public static class VectorUtilTestCases {
                   new TestCaseData(new Vector(0, 0), new Vector(1, 0)).Returns(1),
                   new TestCaseData(new Vector(0, 0), new Vector(0, 5)).Returns(25),
                   new TestCaseData(new Vector(0, 0), new Vector(3, 4)).Returns(25),
+              };
+
+    public static List<TestCaseData> ApplyProjectionTestCases =>
+        new() {
+                  new TestCaseData(new Vector(2, 1, -5), 50).Returns(new Vector(20, 10)),
+                  new TestCaseData(new Vector(0, 0),     1).Returns(new Vector(0,   0)),
+              };
+
+    public static List<TestCaseData> ApplyViewportTestCases =>
+        new() {
+                  new TestCaseData(new Vector(),           100, 100).Returns(new Vector(50,  50)),
+                  new TestCaseData(new Vector(-100, -100), 100, 100).Returns(new Vector(-50, 150)),
+                  new TestCaseData(new Vector(500,  500),  100, 100).Returns(new Vector(550, -450)),
               };
 }

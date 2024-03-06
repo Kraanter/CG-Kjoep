@@ -35,25 +35,17 @@ public static class MatrixTransformationTestCases {
 
     public static List<TestCaseData> ScaleMatrixTestCases =>
         new() {
-                  new TestCaseData(2, 2, 0).Returns(new Matrix(2, 0, 0, 2)),
-                  new TestCaseData(3, 2, 0).Returns(new Matrix(3, 0, 0, 2)),
-                  new TestCaseData(2, 3, 0).Returns(new Matrix(2, 0, 0, 3)),
-                  new TestCaseData(4, 4, 0).Returns(new Matrix(4, 0, 0, 4)),
+                  new TestCaseData(2, 2, 1).Returns(new Matrix(2, 0, 0, 2)),
+                  new TestCaseData(3, 2, 1).Returns(new Matrix(3, 0, 0, 2)),
+                  new TestCaseData(2, 3, 1).Returns(new Matrix(2, 0, 0, 3)),
+                  new TestCaseData(4, 4, 1).Returns(new Matrix(4, 0, 0, 4)),
               };
 
     public static List<TestCaseData> TranslationMatrixTestCases =>
         new() {
-                  new TestCaseData(2, 2).Returns(new Matrix(1, 0, 2, 0, 1, 2, 0, 0, 1)),
-                  new TestCaseData(3, 2).Returns(new Matrix(1, 0, 3, 0, 1, 2, 0, 0, 1)),
-                  new TestCaseData(2, 3).Returns(new Matrix(1, 0, 2, 0, 1, 3, 0, 0, 1)),
-                  new TestCaseData(4, 4).Returns(new Matrix(1, 0, 4, 0, 1, 4, 0, 0, 1)),
-              };
-
-    public static List<TestCaseData> IdentityMatrixTestCases =>
-        new() {
-                  new TestCaseData(2).Returns(new Matrix(1, 0, 0, 1)),
-                  new TestCaseData(3).Returns(new Matrix(1, 0, 0, 1)),
-                  new TestCaseData(4).Returns(new Matrix(1, 0, 0, 1)),
-                  new TestCaseData(5).Returns(new Matrix(1, 0, 0, 1)),
+                  new TestCaseData(2, 2, 2).Returns(new Matrix(1, 0, 0, 2, 0, 1, 0, 2, 0, 0, 1, 2, 0, 0, 0, 1)),
+                  new TestCaseData(3, 2, 1).Returns(new Matrix(1, 0, 0, 3, 0, 1, 0, 2, 0, 0, 1, 1, 0, 0, 0, 1)),
+                  new TestCaseData(2, 3, 4).Returns(new Matrix(1, 0, 0, 2, 0, 1, 0, 3, 0, 0, 1, 4, 0, 0, 0, 1)),
+                  new TestCaseData(4, 4, 4).Returns(new Matrix(1, 0, 0, 4, 0, 1, 0, 4, 0, 0, 1, 4, 0, 0, 0, 1)),
               };
 }

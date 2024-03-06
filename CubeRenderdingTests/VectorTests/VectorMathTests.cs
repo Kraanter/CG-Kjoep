@@ -12,10 +12,6 @@ public class VectorMathTests {
     public Vector SubtractTwoVectors(Vector v1, Vector v2) => v1 - v2;
 
     [Test]
-    [TestCaseSource(typeof(VectorMathTestCases), nameof(VectorMathTestCases.MultiplyVectorWithMatrixTestCases))]
-    public Vector MultiplyVectorWithMatrix(Vector v, Matrix m) => v * m;
-
-    [Test]
     [TestCaseSource(typeof(VectorMathTestCases), nameof(VectorMathTestCases.MultiplyVectorByScalarTestCases))]
     public Vector MultiplyVectorByScalar(Vector v, float scalar) => v * scalar;
 
