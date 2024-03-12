@@ -164,9 +164,9 @@ public class Matrix(float[,] elements) {
         } else if (a.Rows != b.Rows || a.Cols != b.Cols) return false;
 
         for (var i = 0; i < a.Rows; i++) {
-            for (var j = 0; j < a.Cols; j++)
-                if (MathF.Abs(a[i, j] - b[i, j]) > FloatingPointTolerance)
-                    return false;
+            for (var j = 0; j < a.Cols; j++) {
+                if (MathF.Abs(a[i, j] - b[i, j]) > FloatingPointTolerance) return false;
+            }
         }
 
         return true;
@@ -234,8 +234,8 @@ public class Matrix(float[,] elements) {
 
     public static Matrix Translation(float x, float y, float z) {
         Matrix result = Identity(4);
-        result[0, 2] = x;
-        result[1, 2] = y;
+        result[0, 3] = x;
+        result[1, 3] = y;
         result[2, 3] = z;
 
         return result;
@@ -245,36 +245,31 @@ public class Matrix(float[,] elements) {
         theta = DegreesToRadians(theta);
         phi   = DegreesToRadians(phi);
 
-        // Matrix location = Identity(4);
-        // location[2, 3] = r;
-        //
-        // Matrix orientationX = Identity(4);
-        // Matrix orientationY = Identity(4);
-        //
-        // orientationX[1, 1] = MathF.Cos(theta);
-        // orientationX[1, 2] = -MathF.Sin(theta);
-        // orientationX[2, 1] = MathF.Sin(theta);
-        // orientationX[2, 2] = MathF.Cos(theta);
-        //
-        // orientationY[0, 0] = MathF.Cos(phi);
-        // orientationY[0, 2] = MathF.Sin(phi);
-        // orientationY[2, 0] = -MathF.Sin(phi);
-        // orientationY[2, 2] = MathF.Cos(phi);
-        //
-        // // Inverse the 
-        //
-        // return location * orientationX * orientationY;
+        float tx = r * MathF.Sin(phi) * MathF.Cos(theta);
+        float ty = r * MathF.Sin(phi) * MathF.Sin(theta);
+        float tz = r * MathF.Cos(phi);
 
-        var returns = new Matrix(
+        var rotatePhiMatrix = new Matrix(
             new[,] {
-                       { -MathF.Sin(theta), MathF.Cos(theta), 0, 0 },
-                       { -MathF.Cos(theta) * MathF.Cos(phi), -MathF.Sin(theta) * MathF.Cos(phi), MathF.Sin(phi), 0 },
-                       { MathF.Cos(theta)  * MathF.Sin(phi), MathF.Sin(theta)  * MathF.Sin(phi), MathF.Cos(phi), -r },
+                       { 1, 0, 0, 0 },
+                       { 0, MathF.Cos(phi), MathF.Sin(phi), 0 },
+                       { 0, -MathF.Sin(phi), MathF.Cos(phi), 0 },
                        { 0, 0, 0, 1 },
                    }
         );
+        var rotateThetaMatrix = new Matrix(
+            new[,] {
+                       { -MathF.Sin(theta), MathF.Cos(theta), 0, 0 },
+                       { -MathF.Cos(theta), -MathF.Sin(theta), 0, 0 },
+                       { 0, 0, 1, 0 },
+                       { 0, 0, 0, 1 },
+                   }
+        );
+        var translateMatrix = new Matrix(
+            new[,] { { 1, 0, 0, -tx }, { 0, 1, 0, -ty }, { 0, 0, 1, -tz }, { 0, 0, 0, 1 } }
+        );
 
-        return returns;
+        return rotatePhiMatrix * rotateThetaMatrix * translateMatrix;
     }
 
     public Vector ToVector() {

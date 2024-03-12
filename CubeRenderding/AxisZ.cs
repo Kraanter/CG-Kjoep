@@ -10,7 +10,7 @@ public class AxisZ {
 
         Vertexbuffer = new();
         Vertexbuffer.Add(new(0, 0));
-        Vertexbuffer.Add(new(0, 0, -size));
+        Vertexbuffer.Add(new(0, 0, size));
     }
 
     public void Draw(Graphics g, List<Vector> vb) {

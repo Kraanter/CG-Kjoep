@@ -56,16 +56,8 @@ public partial class Form1 : Form {
                              ) *
                              Matrix.Scale(_appSettings.Scale);
 
-        Matrix rotation = rotationTranslateion * translation;
+        Matrix rotation = translation * rotationTranslateion;
 
-        // _xAxis.Draw(e.Graphics, _xAxis.Vertexbuffer.ApplyViewport(WIDTH, HEIGHT));
-        // _yAxis.Draw(e.Graphics, _yAxis.Vertexbuffer.ApplyViewport(WIDTH, HEIGHT));
-        // _zAxis.Draw(e.Graphics, _zAxis.Vertexbuffer.ApplyViewport(WIDTH, HEIGHT));
-
-        // Draw axes
-        // _xAxis.Draw(e.Graphics, _xAxis.Vertexbuffer.ApplyTransformation(viewTransform).ApplyProjection(_appSettings.D));
-        // _yAxis.Draw(e.Graphics, _yAxis.Vertexbuffer.ApplyTransformation(viewTransform).ApplyProjection(_appSettings.D));
-        // _zAxis.Draw(e.Graphics, _zAxis.Vertexbuffer.ApplyTransformation(viewTransform).ApplyProjection(_appSettings.D));
         _xAxis.Draw(
             e.Graphics,
             _xAxis.Vertexbuffer.ApplyTransformation(viewTransform).ApplyProjection(_appSettings.D)
@@ -82,7 +74,6 @@ public partial class Form1 : Form {
                   .ApplyViewport(WIDTH, HEIGHT)
         );
 
-        // Apply transformations
         _cube.Draw(
             e.Graphics,
             _cube.Vertexbuffer.ApplyTransformation(rotation).ApplyTransformation(viewTransform)

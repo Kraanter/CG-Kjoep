@@ -120,11 +120,7 @@ public class Vector(float[] values) : Matrix(values) {
         return x * x + y * y + z * z;
     }
 
-    public Vector ApplyProjection(float distance) {
-        if (Z == 0) return this;
-
-        return new(-distance * X / Z, -distance * Y / Z);
-    }
+    public Vector ApplyProjection(float distance) => Z == 0 ? Clone() : new(-distance * X / Z, -distance * Y / Z);
 
     public Vector ApplyViewport(float width, float height) => new(X + width / 2, -Y + height / 2);
 }
