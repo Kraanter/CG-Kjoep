@@ -87,12 +87,17 @@ public class ApplicationSettings {
     }
 
     public float StartAnimation(Action invalidate) {
+        if (_timer is not null) return 0f;
+
         _timer = new(Animation, invalidate, 0, 50);
 
         return 3f;
     }
 
-    public void StopAnimation() => _timer?.Dispose();
+    public void StopAnimation() {
+        _timer?.Dispose();
+        _timer = null;
+    }
 
     public void Animation(object? state) {
         const float RADIAN = 1;

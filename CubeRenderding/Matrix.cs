@@ -108,7 +108,7 @@ public class Matrix(float[,] elements) {
             for (var j = 0; j < m.Cols; j++) result[i] += m[i, j] * v[j];
         }
 
-        return result;
+        return new(result.X, result.Y, result.Z);
     }
 
     public static Matrix operator *(Matrix a, Matrix b) {
