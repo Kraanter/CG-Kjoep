@@ -40,23 +40,19 @@ public partial class Form1 : Form {
 
         _appSettings.Draw(e.Graphics);
 
-        // Transfor viewport to the center of the screen and make the y coördinates go upward
-        // e.Graphics.TranslateTransform(WIDTH / 2, HEIGHT / 2);
-
         Matrix viewTransform = Matrix.View(_appSettings.R, _appSettings.Theta, _appSettings.Phi);
 
-        Matrix rotationTranslateion = Matrix.Rotate(_appSettings.XRot, Axis.X) *
-                                      Matrix.Rotate(_appSettings.YRot, Axis.Y) *
-                                      Matrix.Rotate(_appSettings.ZRot, Axis.Z);
+        Matrix rotationMatrix = Matrix.Rotate(_appSettings.XRot, Axis.X) *
+                                Matrix.Rotate(_appSettings.YRot, Axis.Y) *
+                                Matrix.Rotate(_appSettings.ZRot, Axis.Z);
 
-        Matrix translation = Matrix.Translation(
-                                 _appSettings.XTranslate,
-                                 _appSettings.YTranslate,
-                                 _appSettings.ZTranslate
-                             ) *
-                             Matrix.Scale(_appSettings.Scale);
-
-        Matrix rotation = translation * rotationTranslateion;
+        Matrix transformation = Matrix.Translation(
+                                    _appSettings.XTranslate,
+                                    _appSettings.YTranslate,
+                                    _appSettings.ZTranslate
+                                )                                *
+                                Matrix.Scale(_appSettings.Scale) *
+                                rotationMatrix;
 
         _xAxis.Draw(
             e.Graphics,
@@ -76,20 +72,14 @@ public partial class Form1 : Form {
 
         _cube.Draw(
             e.Graphics,
-            _cube.Vertexbuffer.ApplyTransformation(rotation).ApplyTransformation(viewTransform)
+            _cube.Vertexbuffer.ApplyTransformation(transformation).ApplyTransformation(viewTransform)
                  .ApplyProjection(_appSettings.D).ApplyViewport(WIDTH, HEIGHT)
         );
     }
 
     private void Form1_KeyDown(object? sender, KeyEventArgs e) {
-        if (e.KeyCode == Keys.Escape) ExitApp();
+        if (e.KeyCode == Keys.Escape) Application.Exit();
 
         _appSettings.KeyDown(e.KeyCode, e.Shift, Invalidate);
-    }
-
-    private static float ExitApp() {
-        Application.Exit();
-
-        return 1f;
     }
 }
